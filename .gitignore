@@ -46,6 +46,7 @@ UpgradeReport*
 *.nsi
 *.sbr
 *.bsc
+*.aps
 
 # OS generated files #
 ######################
