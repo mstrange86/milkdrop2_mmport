@@ -33,6 +33,10 @@
 #include <stdio.h>
 #include <ctype.h>
 
+#ifdef _MSC_VER
+#define strdup _strdup
+#endif
+
 #ifndef _WIN64
   #ifndef __ppc__
     #include <float.h>

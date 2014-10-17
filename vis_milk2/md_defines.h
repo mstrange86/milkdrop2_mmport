@@ -48,8 +48,11 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // define this to disable expression evaluation:
 //   (...for some reason, evallib kills the debugger)
+// NOTE: evallib seems to debug just fine with VS2012, i'll leave it in for older versions
+#if (_MSC_VER < 1700)
 #ifdef _DEBUG
-  #define _NO_EXPR_  //FIXME
+  #define _NO_EXPR_
+#endif
 #endif
 
 #define MAX_GRID_X 192//128
