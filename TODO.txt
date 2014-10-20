@@ -1,8 +1,3 @@
-alt d doesn't work
-
-    this is the root cause: 
-    > pParams->parent_window = (m_screenmode==DESKTOP) ? m_hWndDesktopListView : NULL;
-
 test with no initialization files
 
 add in all the textures/.milk files etc.

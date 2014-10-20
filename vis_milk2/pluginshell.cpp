@@ -871,7 +871,7 @@ void CPluginShell::StuffParams(DXCONTEXT_PARAMS *pParams)
 #ifndef MEDIAMONKEY
 	pParams->parent_window = (m_screenmode==DESKTOP) ? m_hWndDesktopListView : NULL;
 #else
-    // FIXME: investigate further
+    // N.B. desktop mode is effectively broken since everyone is on "vista or later" now
     pParams->parent_window = NULL;
 #endif
 
