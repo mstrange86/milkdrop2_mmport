@@ -1,0 +1,18 @@
+========================================
+MODIFICATIONS
+========================================
+
+underlying issue is lack of new winamp compatibility: http://www.ventismedia.com/mantis/view.php?id=2528#c38636
+
+drop in replacements for missing wasabi calls
+calls to IPC_GETPLAYLISTTITLEW are hacked to IPC_GETPLAYLISTTITLE
+
+========================================
+DEBUGGING
+========================================
+
+Use Visual Studio Reattach Extension to hook to:
+    VisHelper.exe at launch for errors in the runtime visualization code
+    MediaMonkey.exe at launch for errors in the runtime visualization code
+
+Reattach before launching to catch/breakpoint in entry code.

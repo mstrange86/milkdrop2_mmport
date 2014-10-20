@@ -250,9 +250,17 @@ void MakeProjectionMatrix( D3DXMATRIX* pOut,
 void GetWinampSongTitle(HWND hWndWinamp, wchar_t *szSongTitle, int nSize)
 {
     szSongTitle[0] = 0;
+
+#ifndef MEDIAMONKEY
 	lstrcpynW(szSongTitle, (wchar_t*)SendMessage(hWndWinamp, WM_WA_IPC,
 									 SendMessage(hWndWinamp, WM_WA_IPC, 0 , IPC_GETLISTPOS),
 									 IPC_GETPLAYLISTTITLEW), nSize);
+
+#else
+    mbstowcs_s(NULL, szSongTitle, nSize/sizeof(wchar_t), 
+        (char*)SendMessage(hWndWinamp, WM_WA_IPC,SendMessage(hWndWinamp, WM_WA_IPC, 0, IPC_GETLISTPOS),IPC_GETPLAYLISTTITLE),
+        _TRUNCATE);
+#endif
 }
 
 void GetWinampSongPosAsText(HWND hWndWinamp, wchar_t *szSongPos)

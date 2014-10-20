@@ -867,7 +867,14 @@ void CPluginShell::StuffParams(DXCONTEXT_PARAMS *pParams)
 		strcpy(pParams->adapter_devicename, m_adapter_devicename_desktop);
 		break;
 	}
+
+#ifndef MEDIAMONKEY
 	pParams->parent_window = (m_screenmode==DESKTOP) ? m_hWndDesktopListView : NULL;
+#else
+    // FIXME: investigate further
+    pParams->parent_window = NULL;
+#endif
+
 }
 
 void CPluginShell::ToggleDesktop()
@@ -2345,7 +2352,11 @@ void CPluginShell::RenderPlaylist()
 					if (j < nSongs)
 					{
 						// clip max len. of song name to 240 chars, to prevent overflows
+#ifndef MEDIAMONKEY
 						lstrcpynW(buf, (wchar_t*)SendMessage(m_hWndWinamp, WM_USER, j, IPC_GETPLAYLISTTITLEW), 240);
+#else
+                        mbstowcs_s(NULL, buf, sizeof(buf) / sizeof(wchar_t), (char*)SendMessage(m_hWndWinamp, WM_USER, j, IPC_GETPLAYLISTTITLE), 240);
+#endif
 						wsprintfW(m_playlist[i], L"%d. %s ", j+1, buf);  // leave an extra space @ end, so italicized fonts don't get clipped
 					}
 				}

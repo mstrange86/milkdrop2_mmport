@@ -34,6 +34,9 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "defines.h"
 #include "resource.h"
 #include "utility.h"
+#ifdef MEDIAMONKEY
+#include "mediamonkey.h"
+#endif
 
 CPlugin  g_plugin;
 _locale_t g_use_C_locale = 0;
@@ -46,6 +49,21 @@ api_language *WASABI_API_LNG = 0;
 api_application *WASABI_API_APP = 0;
 api_syscb *WASABI_API_SYSCB = 0;
 HINSTANCE WASABI_API_LNG_HINST = 0, WASABI_API_ORIG_HINST = 0;
+
+#ifdef MEDIAMONKEY
+
+// statically allocate in-memory replacements for these winamp services
+api_service_mm WASABI_API_SVC_MM;
+
+api_language_mm WASABI_API_LNG_MM;
+api_application_mm WASABI_API_APP_MM;
+api_syscb_mm WASABI_API_SYSCB_MM;
+
+waServiceFactory_mm WASABI_API_LNG_FACTORY_MM(&WASABI_API_LNG_MM);
+waServiceFactory_mm WASABI_API_APP_FACTORY_MM(&WASABI_API_APP_MM);
+waServiceFactory_mm WASABI_API_SYSCB_FACTORY_MM(&WASABI_API_SYSCB_MM);
+
+#endif
 
 void config(struct winampVisModule *this_mod); // configuration dialog
 int init(struct winampVisModule *this_mod);       // initialization for module
@@ -111,9 +129,13 @@ extern "C" {
 	{
 		if(!WASABI_API_LNG_HINST)
 		{
-			// loader so that we can get the localisation service api for use
-			WASABI_API_SVC = (api_service*)SendMessage(hwndParent, WM_WA_IPC, 0, IPC_GET_API_SERVICE);
-			if (WASABI_API_SVC == (api_service*)1) WASABI_API_SVC = NULL;
+#ifndef MEDIAMONKEY
+            // loader so that we can get the localisation service api for use
+            WASABI_API_SVC = (api_service*)SendMessage(hwndParent, WM_WA_IPC, 0, IPC_GET_API_SERVICE);
+            if (WASABI_API_SVC == (api_service*)1) WASABI_API_SVC = NULL;
+#else
+            WASABI_API_SVC = &WASABI_API_SVC_MM;
+#endif
 
 			waServiceFactory *sf = WASABI_API_SVC->service_getServiceByGuid(languageApiGUID);
 			if (sf) WASABI_API_LNG = reinterpret_cast<api_language*>(sf->getInterface());
@@ -124,25 +146,32 @@ extern "C" {
 			sf = WASABI_API_SVC->service_getServiceByGuid(syscbApiServiceGuid);
 			if (sf) WASABI_API_SYSCB = reinterpret_cast<api_syscb*>(sf->getInterface());
 
-			// need to have this initialised before we try to do anything with localisation features
-			WASABI_API_START_LANG(GetMyInstance(),VisMilkdropLangGUID);
+#ifndef MEDIAMONKEY
+            // need to have this initialised before we try to do anything with localisation features
+            WASABI_API_START_LANG(GetMyInstance(),VisMilkdropLangGUID);
+#else
+            WASABI_API_ORIG_HINST = GetMyInstance();
+            WASABI_API_LNG_HINST = GetMyInstance();
+#endif
 
-			/* added for v2.25 as a quick work around to allow partial
-			/* keyboard mappings (mainly coming from de-de requirements)
-			** [yY][Y][yY][zZ]
-			**  1   2   3   4
-			**
-			** 1 - does yes for the 3 different prompt types
-			** 2 - does Ctrl+Y for stopping display of custom message of song title
-			** 3 - something for preset editing (not 100% sure what)
-			** 4 - used for the previous track sent to Winamp
-			*/
-			WASABI_API_LNGSTRING_BUF(IDS_KEY_MAPPINGS, keyMappings, 8);
+#ifndef MEDIAMONKEY
+            /* added for v2.25 as a quick work around to allow partial
+            /* keyboard mappings (mainly coming from de-de requirements)
+            ** [yY][Y][yY][zZ]
+            **  1   2   3   4
+            **
+            ** 1 - does yes for the 3 different prompt types
+            ** 2 - does Ctrl+Y for stopping display of custom message of song title
+            ** 3 - something for preset editing (not 100% sure what)
+            ** 4 - used for the previous track sent to Winamp
+            */
+            WASABI_API_LNGSTRING_BUF(IDS_KEY_MAPPINGS, keyMappings, 8);
+#endif
 
-			// as we're under a different thread we need to set the locale
-			//WASABI_API_LNG->UseUserNumericLocale();
-			g_use_C_locale = WASABI_API_LNG->Get_C_NumericLocale();
-		}
+            // as we're under a different thread we need to set the locale
+            //WASABI_API_LNG->UseUserNumericLocale();
+            g_use_C_locale = WASABI_API_LNG->Get_C_NumericLocale();
+        }
 
 		return &hdr;
 	}
