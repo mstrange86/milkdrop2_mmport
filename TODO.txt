@@ -1,5 +1,1 @@
-edit sprites doesn't work, needs some kinda modification.  everything else is good.
-
-
-
-
+check for any final release-binary settings
