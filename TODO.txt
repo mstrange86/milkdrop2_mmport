@@ -1,3 +1,5 @@
-test with no initialization files
+edit sprites doesn't work, needs some kinda modification.  everything else is good.
 
-add in all the textures/.milk files etc.
+
+
+
