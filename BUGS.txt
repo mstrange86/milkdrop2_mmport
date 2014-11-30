@@ -1,0 +1,14 @@
+1. VisOut bug:
+
+   only happens when the adapter of fullscreen is the same as the
+   adapter of the window hiding the window sets up a race condition
+   where it sometimes triggers a Quit from the parent and sometimes
+   doesn't triggering the hide immediately after the new window is
+   built, posting after its built and posting after the CREATE of the
+   new window is executed still cause the same problem, the race
+   condition is between us as a subprocess of the VisOut process and
+   operations triggered by the MediaMonkey process
+
+   the right fix is to fix it upstream in MediaMonkey; I could hack it
+   with a timer but there's no proper way to do it since the state of
+   the mediamonkey process isn't signalled to us
