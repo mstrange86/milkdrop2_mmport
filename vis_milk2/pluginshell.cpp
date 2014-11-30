@@ -2649,6 +2649,23 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
 			m_lpDX->SaveWindow();
 		}
 		break;
+
+
+    case MEDIAMONKEY_HIDE_VISOUT_MSG:
+    {
+        HWND visout_hwnd = FindWindow(NULL, MEDIAMONKEY_HIDE_VISOUT_TITLE);
+        HWND md2_hwnd = FindWindow(NULL, SHORTNAME);
+
+        if (m_lpDX && visout_hwnd != NULL && visout_hwnd != md2_hwnd)
+        {
+            // hide visout window
+            m_lpDX->m_ignore_wm_destroy = 1;
+            ShowWindow(visout_hwnd, SW_HIDE);
+            m_lpDX->m_ignore_wm_destroy = 0;
+        }
+    }
+        break;
+        
 	case WM_SIZE:
 		// clear or set activity flag to reflect focus
 		if (m_lpDX && m_lpDX->m_ready && m_screenmode==WINDOWED && !m_resizing)

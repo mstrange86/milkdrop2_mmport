@@ -1205,7 +1205,18 @@ BOOL DXContext::StartOrRestartDevice(DXCONTEXT_PARAMS *pParams)
 		// but leave the D3D object!
 
 		RestoreWinamp();
-		return Internal_Init(pParams, FALSE);
+
+        BOOL rv = Internal_Init(pParams, FALSE);
+
+#ifdef MEDIAMONKEY
+        // HACK: post a message to remove the empty VisOut frame, this will come in after we have the new window made.
+        if (pParams && pParams->screenmode == WINDOWED)
+        {
+            PostMessage(m_hwnd, MEDIAMONKEY_HIDE_VISOUT_MSG, 0, 0);
+        }
+#endif
+
+        return rv;
 	}
 }
 

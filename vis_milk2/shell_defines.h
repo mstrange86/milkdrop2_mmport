@@ -73,4 +73,9 @@ eScrMode;
 
 #include "../Winamp/wa_ipc.h"
 
+#ifdef MEDIAMONKEY
+#define MEDIAMONKEY_HIDE_VISOUT_MSG     (WM_USER + 1668)
+#define MEDIAMONKEY_HIDE_VISOUT_TITLE   "VisOut"
+#endif
+
 #endif

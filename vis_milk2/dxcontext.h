@@ -114,7 +114,11 @@ class DXContext
         char m_szDriver[MAX_DEVICE_IDENTIFIER_STRING];
         char m_szDesc[MAX_DEVICE_IDENTIFIER_STRING];
         HINSTANCE m_hInstance;
+#ifdef MEDIAMONKEY
+    public:
+#endif
         int  m_ignore_wm_destroy;
+    protected:
         int  m_minimize_winamp;
         int  m_winamp_minimized;
         int  m_truly_exiting;
